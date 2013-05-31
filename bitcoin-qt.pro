@@ -3,7 +3,8 @@ TARGET = bitcoin-qt
 macx:TARGET = "Bitcoin-Qt"
 VERSION = 0.8.5
 INCLUDEPATH += src src/json src/qt
-QT += network widgets
+QT += core gui network
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
 CONFIG += thread
@@ -18,15 +19,17 @@ CONFIG += thread
 #    BOOST_INCLUDE_PATH, BOOST_LIB_PATH, BDB_INCLUDE_PATH,
 #    BDB_LIB_PATH, OPENSSL_INCLUDE_PATH and OPENSSL_LIB_PATH respectively
 
-BOOST_LIB_SUFFIX=-mgw48-mt-s-1_54
-BOOST_INCLUDE_PATH=C:/deps/boost_1_54_0
-BOOST_LIB_PATH=C:/deps/boost_1_54_0/stage/lib
-BDB_INCLUDE_PATH=C:/deps/db-4.8.30.NC/build_unix
-BDB_LIB_PATH=C:/deps/db-4.8.30.NC/build_unix
-OPENSSL_INCLUDE_PATH=C:/deps/openssl-1.0.1e/include
-OPENSSL_LIB_PATH=C:/deps/openssl-1.0.1e
-MINIUPNPC_INCLUDE_PATH=C:/deps/
-MINIUPNPC_LIB_PATH=C:/deps/miniupnpc
+win32 {
+	BOOST_LIB_SUFFIX=-mgw48-mt-s-1_54
+	BOOST_INCLUDE_PATH=C:/deps/boost_1_54_0
+	BOOST_LIB_PATH=C:/deps/boost_1_54_0/stage/lib
+	BDB_INCLUDE_PATH=C:/deps/db-4.8.30.NC/build_unix
+	BDB_LIB_PATH=C:/deps/db-4.8.30.NC/build_unix
+	OPENSSL_INCLUDE_PATH=C:/deps/openssl-1.0.1e/include
+	OPENSSL_LIB_PATH=C:/deps/openssl-1.0.1e
+	MINIUPNPC_INCLUDE_PATH=C:/deps/
+	MINIUPNPC_LIB_PATH=C:/deps/miniupnpc
+}
 
 OBJECTS_DIR = build
 MOC_DIR = build
@@ -223,6 +226,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/leveldb.h \
     src/threadsafety.h \
     src/limitedmap.h \
+    src/qt/macnotificationhandler.h \
     src/qt/splashscreen.h
 
 SOURCES += src/qt/bitcoin.cpp \
@@ -324,6 +328,7 @@ DEFINES += BITCOIN_QT_TEST
   macx: CONFIG -= app_bundle
 }
 
+# Todo: Remove this line when switching to Qt5, as that option was removed
 CODECFORTR = UTF-8
 
 # for lrelease/lupdate
@@ -347,6 +352,7 @@ QMAKE_EXTRA_COMPILERS += TSQM
 OTHER_FILES += README.md \
     doc/*.rst \
     doc/*.txt \
+    doc/*.md \
     src/qt/res/bitcoin-qt.rc \
     src/test/*.cpp \
     src/test/*.h \
@@ -404,8 +410,8 @@ win32:!contains(MINGW_THREAD_BUGFIX, 0) {
     DEFINES += _FILE_OFFSET_BITS=64
 }
 
-macx:HEADERS += src/qt/macdockiconhandler.h
-macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm
+macx:HEADERS += src/qt/macdockiconhandler.h src/qt/macnotificationhandler.h
+macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm src/qt/macnotificationhandler.mm
 macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
 macx:ICON = src/qt/res/icons/bitcoin.icns
