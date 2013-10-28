@@ -31,7 +31,7 @@ CTxMemPool mempool;
 unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
-uint256 hashGenesisBlock("0x000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f");
+uint256 hashGenesisBlock("0x00000000d631ca0a7d26c69d887940f6f1b4ac2c93d4484635021640cc982b45");
 static CBigNum bnProofOfWorkLimit(~uint256(0) >> 32);
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
@@ -64,7 +64,7 @@ map<uint256, set<uint256> > mapOrphanTransactionsByPrev;
 // Constant stuff for coinbase transactions we create:
 CScript COINBASE_FLAGS;
 
-const string strMessageMagic = "Bitcoin Signed Message:\n";
+const string strMessageMagic = "Africoin Signed Message:\n";
 
 double dHashesPerSec = 0.0;
 int64 nHPSTimerStart = 0;
@@ -2710,11 +2710,11 @@ bool LoadBlockIndex()
 {
     if (fTestNet)
     {
-        pchMessageStart[0] = 0x0b;
-        pchMessageStart[1] = 0x11;
-        pchMessageStart[2] = 0x09;
-        pchMessageStart[3] = 0x07;
-        hashGenesisBlock = uint256("000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943");
+        pchMessageStart[0] = 0xb1;
+        pchMessageStart[1] = 0x42;
+        pchMessageStart[2] = 0x13;
+        pchMessageStart[3] = 0x13;
+        hashGenesisBlock = uint256("000000006e80f8d632b6497354586399f487f07e258550c1b6d643856550557e");
     }
 
     //
@@ -2747,26 +2747,26 @@ bool InitBlockIndex() {
         //   vMerkleTree: 4a5e1e
 
         // Genesis block
-        const char* pszTimestamp = "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks";
+        const char* pszTimestamp = "The New York Times 23/Oct/2013 The Biggest Economy Killer: Our Government";
         CTransaction txNew;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
         txNew.vin[0].scriptSig = CScript() << 486604799 << CBigNum(4) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
         txNew.vout[0].nValue = 50 * COIN;
-        txNew.vout[0].scriptPubKey = CScript() << ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f") << OP_CHECKSIG;
+        txNew.vout[0].scriptPubKey = CScript() << ParseHex("040375a8eaf076cf0de2189483707aada2105554d242eb66237ef8a67811c6e54e2cb4789556162b1bb518c1fe5bb6be3f58a95e750dffc425df5d12bfd42f2ce3") << OP_CHECKSIG;
         CBlock block;
         block.vtx.push_back(txNew);
         block.hashPrevBlock = 0;
         block.hashMerkleRoot = block.BuildMerkleTree();
         block.nVersion = 1;
-        block.nTime    = 1231006505;
+        block.nTime    = 1382563692;
         block.nBits    = 0x1d00ffff;
-        block.nNonce   = 2083236893;
+        block.nNonce   = 0242380587;
 
         if (fTestNet)
         {
-            block.nTime    = 1296688602;
-            block.nNonce   = 414098458;
+            block.nTime    = 1382828304;
+            block.nNonce   = 0088258357;
         }
 
         //// debug print
@@ -2774,7 +2774,7 @@ bool InitBlockIndex() {
         printf("%s\n", hash.ToString().c_str());
         printf("%s\n", hashGenesisBlock.ToString().c_str());
         printf("%s\n", block.hashMerkleRoot.ToString().c_str());
-        assert(block.hashMerkleRoot == uint256("0x4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b"));
+        assert(block.hashMerkleRoot == uint256("0xd5d7e85ba3c89e4ea3c88f5538e9fccb921df5ab4b93efbb75fbbcb4b8e2feb3"));
         block.print();
         assert(hash == hashGenesisBlock);
 
@@ -3047,7 +3047,7 @@ bool static AlreadyHave(const CInv& inv)
 // The message start string is designed to be unlikely to occur in normal data.
 // The characters are rarely used upper ASCII, not valid as UTF-8, and produce
 // a large 4-byte int at any alignment.
-unsigned char pchMessageStart[4] = { 0xf9, 0xbe, 0xb4, 0xd9 };
+unsigned char pchMessageStart[4] = { 0xf0, 0xaf, 0x21, 0xc0 };
 
 
 void static ProcessGetData(CNode* pfrom)
@@ -4481,7 +4481,7 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
         return false;
 
     //// debug print
-    printf("BitcoinMiner:\n");
+    printf("AfricoinMiner:\n");
     printf("proof-of-work found  \n  hash: %s  \ntarget: %s\n", hash.GetHex().c_str(), hashTarget.GetHex().c_str());
     pblock->print();
     printf("generated %s\n", FormatMoney(pblock->vtx[0].vout[0].nValue).c_str());
@@ -4490,7 +4490,7 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
     {
         LOCK(cs_main);
         if (pblock->hashPrevBlock != hashBestChain)
-            return error("BitcoinMiner : generated block is stale");
+            return error("AfricoinMiner : generated block is stale");
 
         // Remove key from key pool
         reservekey.KeepKey();
@@ -4504,7 +4504,7 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
         // Process this block the same as if we had received it from another node
         CValidationState state;
         if (!ProcessBlock(state, NULL, pblock))
-            return error("BitcoinMiner : ProcessBlock, block not accepted");
+            return error("AfricoinMiner : ProcessBlock, block not accepted");
     }
 
     return true;
@@ -4512,7 +4512,7 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
 
 void static BitcoinMiner(CWallet *pwallet)
 {
-    printf("BitcoinMiner started\n");
+    printf("AfricoinMiner started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
     RenameThread("bitcoin-miner");
 
@@ -4536,7 +4536,7 @@ void static BitcoinMiner(CWallet *pwallet)
         CBlock *pblock = &pblocktemplate->block;
         IncrementExtraNonce(pblock, pindexPrev, nExtraNonce);
 
-        printf("Running BitcoinMiner with %"PRIszu" transactions in block (%u bytes)\n", pblock->vtx.size(),
+        printf("Running AfricoinMiner with %"PRIszu" transactions in block (%u bytes)\n", pblock->vtx.size(),
                ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
 
         //
@@ -4641,7 +4641,7 @@ void static BitcoinMiner(CWallet *pwallet)
     } }
     catch (boost::thread_interrupted)
     {
-        printf("BitcoinMiner terminated\n");
+        printf("AfricoinMiner terminated\n");
         throw;
     }
 }
