@@ -192,10 +192,10 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
 
     // subsidy changing
     int nHeight = pindexBest->nHeight;
-    pindexBest->nHeight = 209999;
+    pindexBest->nHeight = 169999;
     BOOST_CHECK(pblocktemplate = CreateNewBlock(reservekey));
     delete pblocktemplate;
-    pindexBest->nHeight = 210000;
+    pindexBest->nHeight = 170000;
     BOOST_CHECK(pblocktemplate = CreateNewBlock(reservekey));
     delete pblocktemplate;
     pindexBest->nHeight = nHeight;
