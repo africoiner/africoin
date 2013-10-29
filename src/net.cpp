@@ -1192,7 +1192,7 @@ void MapPort(bool)
 // The second name should resolve to a list of seed addresses.
 static const char *strMainNetDNSSeed[][2] = {
     {"kr105.com", "africoinseeds.kr105.com"},
-    {"africoin.info", "seeds.africoin.info"},
+    //{"africoin.info", "seeds.africoin.info"},
     {NULL, NULL}
 };
 
@@ -1247,7 +1247,7 @@ void ThreadDNSAddressSeed()
 
 unsigned int pnSeed[] =
 {
-	0x01020304
+	//0x01020304
 };
 
 void DumpAddresses()
