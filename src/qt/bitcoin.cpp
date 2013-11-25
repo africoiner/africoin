@@ -157,9 +157,9 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationName("Africoin");
     QApplication::setOrganizationDomain("africoin.info");
     if(GetBoolArg("-testnet")) // Separate UI settings for testnet
-        QApplication::setApplicationName("Africoin-Qt-testnet");
+        QApplication::setApplicationName("AfriCoin-Qt-testnet");
     else
-        QApplication::setApplicationName("Africoin-Qt");
+        QApplication::setApplicationName("AfriCoin-Qt");
 
     // ... then GUI settings:
     OptionsModel optionsModel;
