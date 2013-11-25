@@ -1,6 +1,6 @@
 TEMPLATE = app
-TARGET = bitcoin-qt
-macx:TARGET = "Bitcoin-Qt"
+TARGET = africoin-qt
+macx:TARGET = "Africoin-Qt"
 VERSION = 0.8.5
 INCLUDEPATH += src src/json src/qt
 QT += core gui network
