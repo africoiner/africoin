@@ -31,7 +31,7 @@ CTxMemPool mempool;
 unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
-uint256 hashGenesisBlock("0x00000000d631ca0a7d26c69d887940f6f1b4ac2c93d4484635021640cc982b45");
+uint256 hashGenesisBlock("0x00000000964ccef8a12f543d22351ac48e61af1b1965e99c98e839b5097cbc64");
 static CBigNum bnProofOfWorkLimit(~uint256(0) >> 32);
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
@@ -2713,7 +2713,7 @@ bool LoadBlockIndex()
         pchMessageStart[1] = 0x42;
         pchMessageStart[2] = 0x13;
         pchMessageStart[3] = 0x13;
-        hashGenesisBlock = uint256("000000006e80f8d632b6497354586399f487f07e258550c1b6d643856550557e");
+        hashGenesisBlock = uint256("000000005ccf98c3f7949e75ebac719a30ef0f95654f4089ff41f30206744dc7");
     }
 
     //
@@ -2746,7 +2746,7 @@ bool InitBlockIndex() {
         //   vMerkleTree: 4a5e1e
 
         // Genesis block
-        const char* pszTimestamp = "The New York Times 23/Oct/2013 The Biggest Economy Killer: Our Government";
+        const char* pszTimestamp = "November 2nd, 2013 - Brace yourselves, AfriCoin enters cryptocurrency space";
         CTransaction txNew;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
@@ -2758,14 +2758,14 @@ bool InitBlockIndex() {
         block.hashPrevBlock = 0;
         block.hashMerkleRoot = block.BuildMerkleTree();
         block.nVersion = 1;
-        block.nTime    = 1382563692;
+        block.nTime    = 1383445982;
         block.nBits    = 0x1d00ffff;
-        block.nNonce   = 242380587;
+        block.nNonce   = 45956620;
 
         if (fTestNet)
         {
-            block.nTime    = 1382828304;
-            block.nNonce   = 88258357;
+            block.nTime    = 1383452075;
+            block.nNonce   = 151646209;
         }
 
         //// debug print
@@ -2773,7 +2773,7 @@ bool InitBlockIndex() {
         printf("%s\n", hash.ToString().c_str());
         printf("%s\n", hashGenesisBlock.ToString().c_str());
         printf("%s\n", block.hashMerkleRoot.ToString().c_str());
-        assert(block.hashMerkleRoot == uint256("0xd5d7e85ba3c89e4ea3c88f5538e9fccb921df5ab4b93efbb75fbbcb4b8e2feb3"));
+        assert(block.hashMerkleRoot == uint256("0xfceabe140d9705fe7ddcba7bcd183c017c42e81f6c2662af849848e327d00c50"));
         block.print();
         assert(hash == hashGenesisBlock);
 
@@ -4519,7 +4519,7 @@ void static BitcoinMiner(CWallet *pwallet)
     CReserveKey reservekey(pwallet);
     unsigned int nExtraNonce = 0;
 
-    try { while(true) {
+    try { loop {
         while (vNodes.empty())
             MilliSleep(1000);
 
@@ -4559,7 +4559,7 @@ void static BitcoinMiner(CWallet *pwallet)
         uint256 hashTarget = CBigNum().SetCompact(pblock->nBits).getuint256();
         uint256 hashbuf[2];
         uint256& hash = *alignup<16>(hashbuf);
-        while(true)
+        loop
         {
             unsigned int nHashesDone = 0;
             unsigned int nNonceFound;
