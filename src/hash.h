@@ -41,6 +41,33 @@ public:
     }
 };
 
+/** A hasher class for Africoin's 256-bit hash (quadruple SHA-256). */
+class CHash256Q {
+private:
+    CSHA256 sha;
+public:
+    static const size_t OUTPUT_SIZE = CSHA256::OUTPUT_SIZE;
+
+    void Finalize(unsigned char hash[OUTPUT_SIZE]) {
+        unsigned char buf1[CSHA256::OUTPUT_SIZE];
+        unsigned char buf2[CSHA256::OUTPUT_SIZE];
+        sha.Finalize(buf1);
+        sha.Reset().Write(buf1, CSHA256::OUTPUT_SIZE).Finalize(buf2);
+        sha.Reset().Write(buf2, CSHA256::OUTPUT_SIZE).Finalize(buf1);
+        sha.Reset().Write(buf1, CSHA256::OUTPUT_SIZE).Finalize(hash);
+    }
+
+    CHash256Q& Write(const unsigned char *data, size_t len) {
+        sha.Write(data, len);
+        return *this;
+    }
+
+    CHash256Q& Reset() {
+        sha.Reset();
+        return *this;
+    }
+};
+
 /** A hasher class for Bitcoin's 160-bit hash (SHA-256 + RIPEMD-160). */
 class CHash160 {
 private:
@@ -102,6 +129,43 @@ inline uint256 Hash(const T1 p1begin, const T1 p1end,
     return result;
 }
 
+/** Compute the quadruple 256-bit hash of an object. */
+template<typename T1>
+inline uint256 HashQ(const T1 pbegin, const T1 pend)
+{
+    static const unsigned char pblank[1] = {};
+    uint256 result;
+    CHash256Q().Write(pbegin == pend ? pblank : (const unsigned char*)&pbegin[0], (pend - pbegin) * sizeof(pbegin[0]))
+               .Finalize((unsigned char*)&result);
+    return result;
+}
+
+/** Compute the quadruple 256-bit hash of the concatenation of two objects. */
+template<typename T1, typename T2>
+inline uint256 HashQ(const T1 p1begin, const T1 p1end,
+                    const T2 p2begin, const T2 p2end) {
+    static const unsigned char pblank[1] = {};
+    uint256 result;
+    CHash256Q().Write(p1begin == p1end ? pblank : (const unsigned char*)&p1begin[0], (p1end - p1begin) * sizeof(p1begin[0]))
+               .Write(p2begin == p2end ? pblank : (const unsigned char*)&p2begin[0], (p2end - p2begin) * sizeof(p2begin[0]))
+               .Finalize((unsigned char*)&result);
+    return result;
+}
+
+/** Compute the quadruple 256-bit hash of the concatenation of three objects. */
+template<typename T1, typename T2, typename T3>
+inline uint256 HashQ(const T1 p1begin, const T1 p1end,
+                    const T2 p2begin, const T2 p2end,
+                    const T3 p3begin, const T3 p3end) {
+    static const unsigned char pblank[1] = {};
+    uint256 result;
+    CHash256Q().Write(p1begin == p1end ? pblank : (const unsigned char*)&p1begin[0], (p1end - p1begin) * sizeof(p1begin[0]))
+               .Write(p2begin == p2end ? pblank : (const unsigned char*)&p2begin[0], (p2end - p2begin) * sizeof(p2begin[0]))
+               .Write(p3begin == p3end ? pblank : (const unsigned char*)&p3begin[0], (p3end - p3begin) * sizeof(p3begin[0]))
+               .Finalize((unsigned char*)&result);
+    return result;
+}
+
 /** Compute the 160-bit hash an object. */
 template<typename T1>
 inline uint160 Hash160(const T1 pbegin, const T1 pend)
@@ -160,11 +224,54 @@ public:
     }
 };
 
+/** A writer stream (for serialization) that computes a quadruple 256-bit hash. */
+class CHashWriterQ
+{
+private:
+    CHash256Q ctx;
+
+    const int nType;
+    const int nVersion;
+public:
+
+    CHashWriterQ(int nTypeIn, int nVersionIn) : nType(nTypeIn), nVersion(nVersionIn) {}
+
+    int GetType() const { return nType; }
+    int GetVersion() const { return nVersion; }
+
+    void write(const char *pch, size_t size) {
+        ctx.Write((const unsigned char*)pch, size);
+    }
+
+    // invalidates the object
+    uint256 GetHash() {
+        uint256 result;
+        ctx.Finalize((unsigned char*)&result);
+        return result;
+    }
+
+    template<typename T>
+    CHashWriterQ& operator<<(const T& obj) {
+        // Serialize to this stream
+        ::Serialize(*this, obj);
+        return (*this);
+    }
+};
+
 /** Compute the 256-bit hash of an object's serialization. */
 template<typename T>
 uint256 SerializeHash(const T& obj, int nType=SER_GETHASH, int nVersion=PROTOCOL_VERSION)
 {
     CHashWriter ss(nType, nVersion);
+    ss << obj;
+    return ss.GetHash();
+}
+
+/** Compute the quadruple 256-bit hash of an object's serialization. */
+template<typename T>
+uint256 SerializeHashQ(const T& obj, int nType=SER_GETHASH, int nVersion=PROTOCOL_VERSION)
+{
+    CHashWriterQ ss(nType, nVersion);
     ss << obj;
     return ss.GetHash();
 }
