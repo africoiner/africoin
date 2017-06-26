@@ -509,8 +509,7 @@ std::string LicenseInfo()
     const std::string URL_SOURCE_CODE = "<https://github.com/africoiner/africoin>";
     const std::string URL_WEBSITE = "<https://africoin.info>";
 
-    return CopyrightHolders(strprintf(_("Copyright (C) %i-%i"), 2009, COPYRIGHT_YEAR) + " ") + "\n" +
-           strprintf(_("Copyright (C) %i-%i"), 2013, COPYRIGHT_YEAR) + " The Africoin Core developers" + "\n" +
+    return CopyrightHolders(strprintf(_("\xc2\xA9 %i-%i"), 2013, COPYRIGHT_YEAR) + " ") + "\n" +
            "\n" +
            strprintf(_("Please contribute if you find %s useful. "
                        "Visit %s for further information about the software."),

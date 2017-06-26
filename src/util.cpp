@@ -488,7 +488,7 @@ boost::filesystem::path GetDefaultDataDir()
     // Unix: ~/.bitcoin
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "Africoin2";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "Africoin";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -498,10 +498,10 @@ boost::filesystem::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/Africoin2";
+    return pathRet / "Library/Application Support/Africoin";
 #else
     // Unix
-    return pathRet / ".africoin2";
+    return pathRet / ".africoin";
 #endif
 #endif
 }
@@ -850,7 +850,7 @@ std::string CopyrightHolders(const std::string& strPrefix)
 
     // Check for untranslated substitution to make sure Bitcoin Core copyright is not removed by accident
     if (strprintf(COPYRIGHT_HOLDERS, COPYRIGHT_HOLDERS_SUBSTITUTION).find("Bitcoin Core") == std::string::npos) {
-        strCopyrightHolders += "\n" + strPrefix + "The Bitcoin Core developers";
+        strCopyrightHolders += "\n" + strprintf("\xc2\xA9 %u-%u ", 2009, COPYRIGHT_YEAR) + "The Bitcoin Core developers";
     }
     return strCopyrightHolders;
 }
